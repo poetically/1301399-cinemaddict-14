@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Ольга Попова](https://up.htmlacademy.ru/ecmascript/14/user/1301399).
-* Наставник: `Неизвестно`.
+* Наставник: [Альбина Токарчук](https://up.htmlacademy.ru/ecmascript/14/user/167491).
 
 ---
 
