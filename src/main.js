@@ -3,7 +3,7 @@ import {createSiteMenuTemplate} from './view/site-menu.js';
 import {createFilmCardTemplate} from './view/film-card.js';
 import {createFilmsTemplate} from './view/films.js';
 import {createShowMoreTemplate} from './view/show-more.js';
-import {createFilmPopupTemplate} from './view/film-details.js';
+import {createFilmDetailsTemplate} from './view/film-details.js';
 
 const FILM_CARD_COUNT = 5;
 
@@ -29,4 +29,4 @@ const mainFilmContainer = document.querySelector('.films-list > .films-list__con
 renderMultiple(mainFilmContainer, createFilmCardTemplate(), 'beforeend', FILM_CARD_COUNT);
 
 render(siteMainElement, createShowMoreTemplate(), 'beforeend');
-render(document.body, createFilmPopupTemplate(), 'beforeend');
+render(document.body, createFilmDetailsTemplate(), 'beforeend');
