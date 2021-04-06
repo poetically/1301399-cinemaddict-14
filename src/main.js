@@ -1,7 +1,7 @@
-import {createHeaderPorfileTemplate} from './view/header-profile';
+import {createHeaderProfileTemplate} from './view/header-profile.js';
 import {createSiteMenuTemplate} from './view/site-menu.js';
 import {createFilmCardTemplate} from './view/film-card.js';
-import {createFilmsSectionTemplate} from './view/films.js';
+import {createFilmsTemplate} from './view/films.js';
 import {createShowMoreTemplate} from './view/show-more.js';
 import {createFilmPopupTemplate} from './view/film-details.js';
 
@@ -20,9 +20,9 @@ const renderMultiple = (container, template, place, index) => {
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 
-render(siteHeaderElement, createHeaderPorfileTemplate(), 'beforeend');
+render(siteHeaderElement, createHeaderProfileTemplate(), 'beforeend');
 render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
-render(siteMainElement, createFilmsSectionTemplate(), 'beforeend');
+render(siteMainElement, createFilmsTemplate(), 'beforeend');
 
 const mainFilmContainer = document.querySelector('.films-list > .films-list__container');
 
