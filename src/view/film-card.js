@@ -1,15 +1,15 @@
 import {changeMinutesToHoursAndMinutes} from '../utils.js';
 
 export const createFilmCardTemplate = (film) => {
-  const {title, posterPath, description, year, genres, score, isWatched, isInWatchList, isFavorite, runtime, commentIndexes} = film;
+  const {title, posterPath, description, year, genres, score, isWatched, isInWatchList, isFavorite, runtime, commentIds} = film;
   const activeButtonClassName = 'film-card__controls-item--active';
   const watchedClassName = isWatched ? activeButtonClassName : '';
   const addToWatchListClassName = isInWatchList ? activeButtonClassName : '';
   const favoriteClassName = isFavorite ? activeButtonClassName : '';
   const firstGenre = genres[0];
   const hourMinuteRuntime = changeMinutesToHoursAndMinutes(runtime);
-  const commentsCount = commentIndexes.length;
-  const commentTitle = commentIndexes.length === 1 ? 'Comment' : 'Comments';
+  const commentsCount = commentIds.length;
+  const commentTitle = commentIds.length === 1 ? 'Comment' : 'Comments';
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>

@@ -6,14 +6,18 @@ const createGenreTemplate = (genres) => {
   return `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`;
 };
 
-const createCommentsTemplate = (commentIndexes) => {
-  const comments = [];
-  for (let i = 0; i < commentIndexes.length; i++) {
-    const index = commentIndexes[i];
-    comments.push(allComments[index]);
+const createCommentsTemplate = (commentIds) => {
+  const filmComments = [];
+
+  for (const commentId of commentIds) {
+    for (const comment of allComments) {
+      if (comment.id === commentId) {
+        filmComments.push(comment);
+      }
+    }
   }
 
-  return `${comments.map((comment) => `<li class="film-details__comment">
+  return `${filmComments.map((comment) => `<li class="film-details__comment">
   <span class="film-details__comment-emoji">
     <img src="/images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
   </span>
@@ -25,15 +29,15 @@ const createCommentsTemplate = (commentIndexes) => {
       <button class="film-details__comment-delete">Delete</button>
     </p>
   </div>
-</li>`).join('')}`;
+  </li>`).join('')}`;
 };
 
 
 export const createFilmDetailsTemplate = (film) => {
-  const {title, posterPath, score, country, description, runtime, actors, director, writers, releaseDate, genres, ageLimit, isWatched, isFavorite, isInWatchList, commentIndexes} = film;
+  const {title, posterPath, score, country, description, runtime, actors, director, writers, releaseDate, genres, ageLimit, isWatched, isFavorite, isInWatchList, commentIds} = film;
   const hourMinuteRuntime = changeMinutesToHoursAndMinutes(runtime);
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
-  const commentTitle = commentIndexes.length === 1 ? 'Comment' : 'Comments';
+  const commentTitle = commentIds.length === 1 ? 'Comment' : 'Comments';
   const dateOfRelease = humanizeReleaseDate(releaseDate);
 
   return `<section class="film-details">
@@ -111,10 +115,10 @@ export const createFilmDetailsTemplate = (film) => {
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">${commentTitle} <span class="film-details__comments-count">${commentIndexes.length}</span></h3>
+        <h3 class="film-details__comments-title">${commentTitle} <span class="film-details__comments-count">${commentIds.length}</span></h3>
 
         <ul class="film-details__comments-list">
-          ${createCommentsTemplate(commentIndexes)}
+          ${createCommentsTemplate(commentIds)}
         </ul>
 
         <div class="film-details__new-comment">
@@ -149,5 +153,5 @@ export const createFilmDetailsTemplate = (film) => {
       </section>
     </div>
   </form>
-</section>`;
+  </section>`;
 };
