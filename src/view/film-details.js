@@ -1,12 +1,41 @@
-const createFilmDetailsGenreTemplate = () => {
-  return `
-  <span class="film-details__genre"></span>`;
+
+import {changeMinutesToHoursAndMinutes, humanizeReleaseDate} from '../utils.js';
+import {allComments} from '../mock/comment.js';
+
+const createGenreTemplate = (genres) => {
+  return `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`;
 };
 
-const genreTemplate = createFilmDetailsGenreTemplate();
+const createCommentsTemplate = (commentIndexes) => {
+  const comments = [];
+  for (let i = 0; i < commentIndexes.length; i++) {
+    const index = commentIndexes[i];
+    comments.push(allComments[index]);
+  }
+
+  return `${comments.map((comment) => `<li class="film-details__comment">
+  <span class="film-details__comment-emoji">
+    <img src="/images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
+  </span>
+  <div>
+    <p class="film-details__comment-text">${comment.message}</p>
+    <p class="film-details__comment-info">
+      <span class="film-details__comment-author">${comment.userName}</span>
+      <span class="film-details__comment-day">${comment.date}</span>
+      <button class="film-details__comment-delete">Delete</button>
+    </p>
+  </div>
+</li>`).join('')}`;
+};
+
 
 export const createFilmDetailsTemplate = (film) => {
-  const {title, posterPath, score, country, description, runtime, actors, director, writers, releaseDate} = film;
+  const {title, posterPath, score, country, description, runtime, actors, director, writers, releaseDate, genres, ageLimit, isWatched, isFavorite, isInWatchList, commentIndexes} = film;
+  const hourMinuteRuntime = changeMinutesToHoursAndMinutes(runtime);
+  const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
+  const commentTitle = commentIndexes.length === 1 ? 'Comment' : 'Comments';
+  const dateOfRelease = humanizeReleaseDate(releaseDate);
+
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
@@ -17,7 +46,7 @@ export const createFilmDetailsTemplate = (film) => {
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="${posterPath}" alt="">
 
-          <p class="film-details__age">18+</p>
+          <p class="film-details__age">${ageLimit}</p>
         </div>
 
         <div class="film-details__info">
@@ -47,19 +76,19 @@ export const createFilmDetailsTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${releaseDate}</td>
+              <td class="film-details__cell">${dateOfRelease}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${runtime}</td>
+              <td class="film-details__cell">${hourMinuteRuntime}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
               <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
-              <td class="film-details__cell film-details__cell--genre">${genreTemplate}</td>
+              <td class="film-details__term">${genreTitle}</td>
+              <td class="film-details__cell film-details__cell--genre">${createGenreTemplate(genres)}</td>
 
             </tr>
           </table>
@@ -69,74 +98,23 @@ export const createFilmDetailsTemplate = (film) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${isInWatchList ? 'checked' : ''}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? 'checked' : ''}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? 'checked' : ''}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+        <h3 class="film-details__comments-title">${commentTitle} <span class="film-details__comments-count">${commentIndexes.length}</span></h3>
 
         <ul class="film-details__comments-list">
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Interesting setting and a good cast</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">Tim Macoveev</span>
-                <span class="film-details__comment-day">2019/12/31 23:59</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/sleeping.png" width="55" height="55" alt="emoji-sleeping">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Booooooooooring</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">2 days ago</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/puke.png" width="55" height="55" alt="emoji-puke">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Very very old. Meh</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">2 days ago</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
-          <li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
-            </span>
-            <div>
-              <p class="film-details__comment-text">Almost two hours? Seriously?</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-author">John Doe</span>
-                <span class="film-details__comment-day">Today</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>
+          ${createCommentsTemplate(commentIndexes)}
         </ul>
 
         <div class="film-details__new-comment">
