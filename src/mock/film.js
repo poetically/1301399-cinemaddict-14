@@ -1,11 +1,10 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-dayjs.extend(duration);
 import {getRandomInteger} from '../utils.js';
-import {TEXT} from '../const.js';
-import {generateCommentIndexes} from './comment.js';
+import {TEXT, COMMENT_COUNT} from '../const.js';
 
-const MAX_DESC_LENGTH = 5;
+const COMMENT_COUNT_PER_FILM = 5;
+const MAX_DESC_COUNT = 5;
 const MAX_YEAR = 1957;
 const MIN_YEAR = 1938;
 const TITLES = ['The unique choice', 'Crack of doom', 'The desire of journey', 'No criminals, no law', 'L\'ombre de Lucky Luke', 'You can never hold back spring'];
@@ -18,8 +17,10 @@ const AGE_LIMITS = ['6+', '16+', '60+', '0+'];
 const POSTERS = ['made-for-each-other.png', 'popeye-meets-sinbad.png', 'sagebrush-trail.jpg', 'santa-claus-conquers-the-martians.jpg', 'the-dance-of-life.jpg', 'the-great-flamarion.jpg', 'the-man-with-the-golden-arm.jpg'];
 const phrases = TEXT.match( /[^.!?]+[.!?]+/g ).map((phrase) => phrase.trim());
 
+dayjs.extend(duration);
+
 const generateDescription = () => {
-  const descCount = getRandomInteger(1, MAX_DESC_LENGTH);
+  const descCount = getRandomInteger(1, MAX_DESC_COUNT);
   let description = '';
   for (let i = 0; i < descCount; i++) {
     const randomPhrase = phrases[getRandomInteger(0, phrases.length - 1)];
@@ -97,10 +98,15 @@ const getCountry = () => {
   return COUNTRIES[getRandomInteger(0, COUNTRIES.length - 1)];
 };
 
+const generateCommentIndexes = () => {
+  const commentCount = getRandomInteger(0, COMMENT_COUNT_PER_FILM);
+  return Array.from({length: commentCount}, () => getRandomInteger(0, COMMENT_COUNT - 1));
+};
+
 export const generateFilm = () => {
   return {
     title: getTitle(),
-    originalTitle: null,
+    originalTitle: getTitle(),
     posterPath: getPosterPath(),
     score: generateScore(),
     year: generateYear(),

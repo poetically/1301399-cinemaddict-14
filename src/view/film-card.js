@@ -1,5 +1,8 @@
 import {changeMinutesToHoursAndMinutes} from '../utils.js';
 
+const MAX_DESC_LENGTH = 140;
+const DESC_MAX_INDEX = 138;
+
 export const createFilmCardTemplate = (film) => {
   const {title, posterPath, description, year, genres, score, isWatched, isInWatchList, isFavorite, runtime, commentIds} = film;
   const activeButtonClassName = 'film-card__controls-item--active';
@@ -10,6 +13,7 @@ export const createFilmCardTemplate = (film) => {
   const hourMinuteRuntime = changeMinutesToHoursAndMinutes(runtime);
   const commentsCount = commentIds.length;
   const commentTitle = commentIds.length === 1 ? 'Comment' : 'Comments';
+  const shortDescription = description.length > MAX_DESC_LENGTH ? description.slice(0, DESC_MAX_INDEX) + '..' : description;
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>
@@ -20,7 +24,7 @@ export const createFilmCardTemplate = (film) => {
     <span class="film-card__genre">${firstGenre}</span>
   </p>
   <img src="${posterPath}" alt="" class="film-card__poster">
-  <p class="film-card__description">${description}</p>
+  <p class="film-card__description">${shortDescription}</p>
   <a class="film-card__comments">${commentsCount} ${commentTitle}</a>
   <div class="film-card__controls">
     <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${addToWatchListClassName}" type="button">Add to watchlist</button>

@@ -1,5 +1,5 @@
-import {FILM_CARD_COUNT} from '../const.js';
+import {getRandomInteger} from '../utils.js';
 export const createFooterStatisticsTemplate = () => {
   return `
-  <p>${FILM_CARD_COUNT} movies inside</p>`;
+  <p>${getRandomInteger(10, 100)} movies inside</p>`;
 };

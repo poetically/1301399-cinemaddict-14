@@ -1,9 +1,8 @@
-import {COMMENT_COUNT, COMMENT_COUNT_PER_FILM, TEXT} from '../const.js';
+import {TEXT, EMOTIONS, COMMENT_COUNT} from '../const.js';
 import {getRandomInteger, humanizeCommentDate} from '../utils.js';
 
-const phrases = TEXT.match( /[^.!?]+[.!?]+/g ).map((phrase) => phrase.trim());
-const EMOTIONS = ['smile', 'puke', 'sleeping', 'angry'];
 const USER_NAMES = ['Ivan', 'Joe Smith', 'Cathy', 'Trésor', 'Lukian Lukianovich', 'Félicien', 'Anna-Emma'];
+const phrases = TEXT.match( /[^.!?]+[.!?]+/g ).map((phrase) => phrase.trim());
 
 
 const getUserName = () => {
@@ -22,15 +21,9 @@ const getCommentDate = () => {
   return humanizeCommentDate(`${getRandomInteger(2012, 2020)}/${getRandomInteger(1, 12)}/${getRandomInteger(1, 30)} ${getRandomInteger(1, 23)}:${getRandomInteger(0, 59)}`);
 };
 
-export const generateCommentIndexes = () => {
-  const commentCount = getRandomInteger(0, COMMENT_COUNT_PER_FILM);
-  return Array.from({length: commentCount}, () => getRandomInteger(0, COMMENT_COUNT - 1));
-};
-
-
-const generateComment = () => {
+const generateComment = (index) => {
   return {
-    id: null,
+    id: index,
     emotion: getEmotion(),
     date: getCommentDate(),
     userName: getUserName(),
@@ -38,5 +31,4 @@ const generateComment = () => {
   };
 };
 
-export const allComments = new Array(COMMENT_COUNT).fill().map(generateComment);
-allComments.map((comment) => comment.id = allComments.indexOf(comment));
+export const allComments = new Array(COMMENT_COUNT).fill().map((item, index) => generateComment(index));

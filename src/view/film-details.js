@@ -1,25 +1,16 @@
-
+import {EMOTIONS} from '../const.js';
 import {changeMinutesToHoursAndMinutes, humanizeReleaseDate} from '../utils.js';
 import {allComments} from '../mock/comment.js';
+
 
 const createGenreTemplate = (genres) => {
   return `${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}`;
 };
 
-const createCommentsTemplate = (commentIds) => {
-  const filmComments = [];
-
-  for (const commentId of commentIds) {
-    for (const comment of allComments) {
-      if (comment.id === commentId) {
-        filmComments.push(comment);
-      }
-    }
-  }
-
-  return `${filmComments.map((comment) => `<li class="film-details__comment">
+const createCommentItemTemplate = (comment) => {
+  return `<li class="film-details__comment">
   <span class="film-details__comment-emoji">
-    <img src="/images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-smile">
+    <img src="./images/emoji/${comment.emotion}.png" width="55" height="55" alt="emoji-${comment.emotion}">
   </span>
   <div>
     <p class="film-details__comment-text">${comment.message}</p>
@@ -29,12 +20,27 @@ const createCommentsTemplate = (commentIds) => {
       <button class="film-details__comment-delete">Delete</button>
     </p>
   </div>
-  </li>`).join('')}`;
+  </li>`;
 };
 
+const createCommentsTemplate = (commentIds) => {
+  const filteredComments = allComments.filter((comment) => commentIds.includes(comment.id));
+  return `${filteredComments.map((comment) => createCommentItemTemplate(comment)).join('')}`;
+};
+
+const createEmojiItemTemplate = (emotion) => {
+  return `<label class="film-details__emoji-label" for="emoji-${emotion}">
+    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emotion}" value="${emotion}">
+    <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
+  </label>`;
+};
+
+const createEmojisTemplate = () => {
+  return `${EMOTIONS.map((emotion) => createEmojiItemTemplate(emotion)).join('')}`;
+};
 
 export const createFilmDetailsTemplate = (film) => {
-  const {title, posterPath, score, country, description, runtime, actors, director, writers, releaseDate, genres, ageLimit, isWatched, isFavorite, isInWatchList, commentIds} = film;
+  const {title, originalTitle, posterPath, score, country, description, runtime, actors, director, writers, releaseDate, genres, ageLimit, isWatched, isFavorite, isInWatchList, commentIds} = film;
   const hourMinuteRuntime = changeMinutesToHoursAndMinutes(runtime);
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
   const commentTitle = commentIds.length === 1 ? 'Comment' : 'Comments';
@@ -57,7 +63,7 @@ export const createFilmDetailsTemplate = (film) => {
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
               <h3 class="film-details__title">${title}</h3>
-              <p class="film-details__title-original">Original: ${title}</p>
+              <p class="film-details__title-original">Original: ${originalTitle}</p>
             </div>
 
             <div class="film-details__rating">
@@ -129,25 +135,7 @@ export const createFilmDetailsTemplate = (film) => {
           </label>
 
           <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-            <label class="film-details__emoji-label" for="emoji-smile">
-              <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-            <label class="film-details__emoji-label" for="emoji-sleeping">
-              <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-            <label class="film-details__emoji-label" for="emoji-puke">
-              <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-            <label class="film-details__emoji-label" for="emoji-angry">
-              <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-            </label>
+            ${createEmojisTemplate()}
           </div>
         </div>
       </section>
