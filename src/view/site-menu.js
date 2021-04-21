@@ -13,7 +13,6 @@ const createSortTemplate = (FilmSort) => {
 
 export const createSiteMenuTemplate = (filters, FilmSort) => {
   const filtersTemplate = filters.map((filter) => createFilterTemplate(filter)).join('');
-  // const sort
   return `<nav class="main-navigation">
     <div class="main-navigation__items">
 

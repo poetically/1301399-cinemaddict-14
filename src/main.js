@@ -7,7 +7,7 @@ import {createFilmDetailsTemplate} from './view/film-details.js';
 import {createFooterStatisticsTemplate} from './view/footer-statistics.js';
 import {generateFilm} from './mock/film.js';
 import {generateFilter} from './mock/filter.js';
-import {FilmSort} from './mock/sort.js';
+import {FilmSort} from './const.js';
 
 const FILM_CARD_COUNT = 18;
 const FILM_COUNT_PER_STEP = 5;
