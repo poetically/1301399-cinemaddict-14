@@ -1,5 +1,5 @@
 import {EMOTIONS} from '../const.js';
-import {changeMinutesToHoursAndMinutes, humanizeReleaseDate} from '../utils.js';
+import {createElement, changeMinutesToHoursAndMinutes, humanizeReleaseDate} from '../utils.js';
 import {allComments} from '../mock/comment.js';
 
 
@@ -39,7 +39,7 @@ const createEmojisTemplate = () => {
   return `${EMOTIONS.map((emotion) => createEmojiItemTemplate(emotion)).join('')}`;
 };
 
-export const createFilmDetailsTemplate = (film) => {
+const createFilmDetailsTemplate = (film) => {
   const {title, originalTitle, posterPath, score, country, description, runtime, actors, director, writers, releaseDate, genres, ageLimit, isWatched, isFavorite, isInWatchList, commentIds} = film;
   const hourMinuteRuntime = changeMinutesToHoursAndMinutes(runtime);
   const genreTitle = genres.length > 1 ? 'Genres' : 'Genre';
@@ -143,3 +143,26 @@ export const createFilmDetailsTemplate = (film) => {
   </form>
   </section>`;
 };
+
+export default class FilmDetails {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
