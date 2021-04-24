@@ -1,4 +1,4 @@
-import {ESC_KEYCODE} from './const.js';
+import {ESCAPE_KEY} from './const.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
@@ -9,7 +9,7 @@ export const RenderPosition = {
 };
 
 export const isEscEvent = (evt, action) => {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.key === ESCAPE_KEY) {
     evt.preventDefault();
     action();
   }

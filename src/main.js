@@ -1,5 +1,6 @@
 import HeaderProfileView from './view/header-profile.js';
 import SiteMenuView from './view/site-menu.js';
+import SortView from './view/sort.js';
 import FilmCardView from './view/film-card.js';
 import FilmsView from './view/films.js';
 import ShowMoreView from './view/show-more.js';
@@ -12,6 +13,7 @@ import {render, isEscEvent, RenderPosition} from './utils.js';
 
 const FILM_CARD_COUNT = 18;
 const FILM_COUNT_PER_STEP = 5;
+const body = document.body;
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer__statistics');
@@ -20,7 +22,8 @@ const films = new Array(FILM_CARD_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
 
 render(siteHeaderElement, new HeaderProfileView().getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new SiteMenuView(filters, FilmSort).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new SortView(FilmSort).getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new FilmsView().getElement(), RenderPosition.BEFOREEND);
 
 const mainFilmContainer = document.querySelector('.films-list > .films-list__container');
@@ -29,7 +32,7 @@ const renderFilmCard = (film) => {
   const filmCardComponent = new FilmCardView(film).getElement();
   const onClickShowFilmDetails = (evt) => {
     evt.preventDefault();
-    document.body.classList.add('hide-overflow');
+    body.classList.add('hide-overflow');
     renderFilmDetails(film);
   };
   filmCardComponent.addEventListener('click', onClickShowFilmDetails);
@@ -41,7 +44,6 @@ const renderSomeFilmCards = () => {
     renderFilmCard(films[i]);
   }
 };
-renderSomeFilmCards();
 
 if (films.length >  FILM_COUNT_PER_STEP) {
   let renderedFilmsCount = FILM_COUNT_PER_STEP;
@@ -64,8 +66,8 @@ const renderFilmDetails = (film) => {
   const closeButton = filmDetailsComponent.querySelector('.film-details__close-btn');
 
   const closeFilmDetails = () => {
-    document.body.removeChild(filmDetailsComponent);
-    document.body.classList.remove('hide-overflow');
+    body.removeChild(filmDetailsComponent);
+    body.classList.remove('hide-overflow');
     document.removeEventListener('keydown', onEscCloseFilmDetails);
   };
 
@@ -79,7 +81,8 @@ const renderFilmDetails = (film) => {
 
   closeButton.addEventListener('click', onClickCloseFilmDetails);
   document.addEventListener('keydown', onEscCloseFilmDetails);
-  render(document.body, filmDetailsComponent, RenderPosition.BEFOREEND);
+  render(body, filmDetailsComponent, RenderPosition.BEFOREEND);
 };
 
 render(siteFooterElement, new FooterStatisticsView().getElement(), RenderPosition.BEFOREEND);
+renderSomeFilmCards();
