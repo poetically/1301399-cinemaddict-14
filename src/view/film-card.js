@@ -1,9 +1,9 @@
-import {changeMinutesToHoursAndMinutes} from '../utils.js';
+import {createElement, changeMinutesToHoursAndMinutes} from '../utils.js';
 
 const MAX_DESC_LENGTH = 140;
 const DESC_MAX_INDEX = 138;
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {title, posterPath, description, year, genres, score, isWatched, isInWatchList, isFavorite, runtime, commentIds} = film;
   const activeButtonClassName = 'film-card__controls-item--active';
   const watchedClassName = isWatched ? activeButtonClassName : '';
@@ -33,3 +33,26 @@ export const createFilmCardTemplate = (film) => {
   </div>
 </article>`;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
