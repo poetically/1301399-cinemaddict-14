@@ -1,5 +1,6 @@
 import {TEXT, EMOTIONS, COMMENT_COUNT} from '../const.js';
-import {getRandomInteger, humanizeCommentDate} from '../utils.js';
+import {getRandomInteger} from '../utils/common.js';
+import {humanizeCommentDate} from '../utils/date-format.js';
 
 const USER_NAMES = ['Ivan', 'Joe Smith', 'Cathy', 'Trésor', 'Lukian Lukianovich', 'Félicien', 'Anna-Emma'];
 const phrases = TEXT.match( /[^.!?]+[.!?]+/g ).map((phrase) => phrase.trim());
