@@ -3,71 +3,81 @@ import SiteMenuView from './view/site-menu.js';
 import SortView from './view/sort.js';
 import FilmCardView from './view/film-card.js';
 import FilmsView from './view/films.js';
+import FilmsListView from './view/films-list.js';
+import FilmsListContainerView from './view/films-list-container.js';
+import NoFilmView from './view/no-film.js';
 import ShowMoreView from './view/show-more.js';
 import FilmDetailsView from './view/film-details.js';
 import FooterStatisticsView from './view/footer-statistics.js';
 import {generateFilm} from './mock/film.js';
 import {generateFilter} from './mock/filter.js';
-import {FilmSort} from './const.js';
-import {render, isEscEvent, RenderPosition} from './utils.js';
+import {render, RenderPosition, remove} from './utils/render.js';
+import {isEscEvent} from './utils/common.js';
 
 const FILM_CARD_COUNT = 18;
 const FILM_COUNT_PER_STEP = 5;
-const body = document.body;
-const siteHeaderElement = document.querySelector('.header');
-const siteMainElement = document.querySelector('.main');
-const siteFooterElement = document.querySelector('.footer__statistics');
+const bodyElement = document.body;
+const siteHeaderElement = bodyElement.querySelector('.header');
+const siteMainElement = bodyElement.querySelector('.main');
+const siteFooterElement = bodyElement.querySelector('.footer__statistics');
 
 const films = new Array(FILM_CARD_COUNT).fill().map(generateFilm);
 const filters = generateFilter(films);
 
 render(siteHeaderElement, new HeaderProfileView().getElement(), RenderPosition.BEFOREEND);
 render(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new SortView(FilmSort).getElement(), RenderPosition.BEFOREEND);
-render(siteMainElement, new FilmsView().getElement(), RenderPosition.BEFOREEND);
 
-const mainFilmContainer = document.querySelector('.films-list > .films-list__container');
-
-const renderFilmCard = (film) => {
-  const filmCardComponent = new FilmCardView(film).getElement();
-  const onClickShowFilmDetails = (evt) => {
-    evt.preventDefault();
-    body.classList.add('hide-overflow');
-    renderFilmDetails(film);
+const renderShowMoreButton = (container, filmContainer) => {
+  let renderedFilmsCount = FILM_COUNT_PER_STEP;
+  const showMoreButtonComponent = new ShowMoreView();
+  render(container, showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+  const onClickShowMoreCards = () => {
+    const furtherFiveFilms = films.slice(renderedFilmsCount, renderedFilmsCount + FILM_COUNT_PER_STEP);
+    furtherFiveFilms.forEach((film) => renderFilmCard(filmContainer, film));
+    renderedFilmsCount += FILM_COUNT_PER_STEP;
+    if (renderedFilmsCount >= films.length) {
+      remove(showMoreButtonComponent);
+    }
   };
-  filmCardComponent.addEventListener('click', onClickShowFilmDetails);
-  render(mainFilmContainer, filmCardComponent, RenderPosition.BEFOREEND);
+  showMoreButtonComponent.setClickHandler(onClickShowMoreCards);
 };
 
-const renderSomeFilmCards = () => {
+const renderSomeFilmCards = (container) => {
   for (let i = 0; i < Math.min(FILM_COUNT_PER_STEP, films.length); i++) {
-    renderFilmCard(films[i]);
+    renderFilmCard(container, films[i]);
   }
 };
 
-if (films.length >  FILM_COUNT_PER_STEP) {
-  let renderedFilmsCount = FILM_COUNT_PER_STEP;
-  render(siteMainElement, new ShowMoreView().getElement(), RenderPosition.BEFOREEND);
-  const showMoreButton = document.querySelector('.films-list__show-more');
-  const onClickShowMoreCards = (evt) => {
-    evt.preventDefault();
-    const furtherFiveFilms = films.slice(renderedFilmsCount, renderedFilmsCount + FILM_COUNT_PER_STEP);
-    furtherFiveFilms.forEach((film) => renderFilmCard(film));
-    renderedFilmsCount += FILM_COUNT_PER_STEP;
-    if (renderedFilmsCount >= films.length) {
-      showMoreButton.remove();
-    }
+const renderFilmCard = (container, film) => {
+  const filmCardComponent = new FilmCardView(film);
+  const onClickShowFilmDetails = () => {
+    bodyElement.classList.add('hide-overflow');
+    renderFilmDetails(film);
   };
-  showMoreButton.addEventListener('click', onClickShowMoreCards);
-}
+  filmCardComponent.setClickHandler(onClickShowFilmDetails);
+  render(container, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
+};
+
+const renderFilmsSection = () => {
+  const filmsElement = new FilmsView().getElement();
+  const filmsListElement = new FilmsListView().getElement();
+  const filmsListContainerElement = new FilmsListContainerView().getElement();
+  render(siteMainElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+  render(siteMainElement, filmsElement, RenderPosition.BEFOREEND);
+  render(filmsElement, filmsListElement, RenderPosition.BEFOREEND);
+  render(filmsListElement, filmsListContainerElement, RenderPosition.BEFOREEND);
+  renderSomeFilmCards(filmsListContainerElement);
+  if (films.length >  FILM_COUNT_PER_STEP) {
+    renderShowMoreButton(filmsListElement, filmsListContainerElement);
+  }
+};
 
 const renderFilmDetails = (film) => {
-  const filmDetailsComponent = new FilmDetailsView(film).getElement();
-  const closeButton = filmDetailsComponent.querySelector('.film-details__close-btn');
+  const filmDetailsComponent = new FilmDetailsView(film);
 
   const closeFilmDetails = () => {
-    body.removeChild(filmDetailsComponent);
-    body.classList.remove('hide-overflow');
+    bodyElement.removeChild(filmDetailsComponent.getElement());
+    bodyElement.classList.remove('hide-overflow');
     document.removeEventListener('keydown', onEscCloseFilmDetails);
   };
 
@@ -79,10 +89,15 @@ const renderFilmDetails = (film) => {
     closeFilmDetails();
   };
 
-  closeButton.addEventListener('click', onClickCloseFilmDetails);
+  filmDetailsComponent.setCloseBtnClickHandler(onClickCloseFilmDetails);
   document.addEventListener('keydown', onEscCloseFilmDetails);
-  render(body, filmDetailsComponent, RenderPosition.BEFOREEND);
+  render(bodyElement, filmDetailsComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 render(siteFooterElement, new FooterStatisticsView().getElement(), RenderPosition.BEFOREEND);
-renderSomeFilmCards();
+
+if (films.length > 0) {
+  renderFilmsSection();
+} else {
+  render(siteMainElement, new NoFilmView().getElement(), RenderPosition.BEFOREEND);
+}

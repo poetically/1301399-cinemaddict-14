@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import {getRandomInteger} from '../utils.js';
+import {getRandomInteger} from '../utils/common.js';
 import {TEXT, COMMENT_COUNT} from '../const.js';
 
 const COMMENT_COUNT_PER_FILM = 5;
