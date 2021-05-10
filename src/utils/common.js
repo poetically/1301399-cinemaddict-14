@@ -1,4 +1,4 @@
-import {ESCAPE_KEY} from '../const.js';
+// import {ESCAPE_KEY} from '../const.js';
 
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -6,9 +6,10 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export const isEscEvent = (evt, action) => {
-  if (evt.key === ESCAPE_KEY) {
-    evt.preventDefault();
-    action();
-  }
-};
+// export const isEscEvent = (evt, action) => {
+//   if (evt.key === ESCAPE_KEY) {
+//     evt.preventDefault();
+//     action();
+//   }
+// };
+
